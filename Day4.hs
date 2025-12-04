@@ -14,7 +14,15 @@ part1 s = print (length [(a,b) | a <- [1..((length input)-2)], b <- [1..((length
 
 
 
+-- go line for line and remove those accesable
+removable input = [if (((input!!a)!!b) == '@') && (forkliftable input (a,b)) | a <- [1..((length input)-2)], b <- [1..((length(head input))-2)]]
 
+part2 s = print (length [(a,b) | a <- [1..((length input)-2)], b <- [1..((length(head input))-2)],((input!!a)!!b) == '@', forkliftable input (a,b)])
+            where
+                input = [(foldr (\a b -> a:b) "" (replicate w '.'))]++(padded)++[(foldr (\a b -> a:b) "" (replicate w '.'))]
+                padded = ["."++a++"." | a <- raw]
+                w = (length (head raw)) + 2
+                raw = lines s
 
 
 str2int [x] = (fromEnum x) - 48
