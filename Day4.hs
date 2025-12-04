@@ -14,19 +14,32 @@ part1 s = print (length [(a,b) | a <- [1..((length input)-2)], b <- [1..((length
 
 
 
--- go line for line and remove those accesable
-removable input = [if (((input!!a)!!b) == '@') && (forkliftable input (a,b)) | a <- [1..((length input)-2)], b <- [1..((length(head input))-2)]]
 
-part2 s = print (length [(a,b) | a <- [1..((length input)-2)], b <- [1..((length(head input))-2)],((input!!a)!!b) == '@', forkliftable input (a,b)])
+removable x = (pad [[c | (c,d) <- tuples] | tuples <- tupled],sum[sum[d | (c,d) <- tuples, d == 1] | tuples <- tupled])
+                where
+                    tupled = tupledmap x
+
+
+tupledmap x = [[if ((x!!a)!!b) == '@' then if forkliftable x (a,b) then ('.',1) else ('@',0) else ('.',0) | b <- [1..((length(head x))-2)]] | a <- [1..((length x)-2)]]
+
+pad x = [(foldr (\a b -> a:b) "" (replicate w '.'))]++(padded)++[(foldr (\a b -> a:b) "" (replicate w '.'))]
+        where
+            padded = ["."++a++"." | a <- x]
+            w = (length (head x)) + 2
+
+remove x = if b == 0
+            then
+                b
+            else
+                b+d
+                where
+                    (a,b) = removable x
+                    d = remove a
+
+part2 s = print (remove input)
             where
-                input = [(foldr (\a b -> a:b) "" (replicate w '.'))]++(padded)++[(foldr (\a b -> a:b) "" (replicate w '.'))]
-                padded = ["."++a++"." | a <- raw]
-                w = (length (head raw)) + 2
+                input = pad raw
                 raw = lines s
-
-
-str2int [x] = (fromEnum x) - 48
-str2int (x:xs) = ((fromEnum x) - 48) * (10 ^ (length xs)) + str2int xs
 
 -- input goes here:
 testinput = ""
